@@ -8,16 +8,22 @@ import java.lang.Character;
 //resize panels
 //colour panels + error label
 
+
+//remove the stages parameter 
+
+//JTBD
+//construct schedule depending on parameter input
+//AL-insert into list depending on priority given
+//create a loop around
+//add a button to download JTABLE into files
+
 public class StartMenu implements ActionListener{ 
-    private final int numParameters = 3;
-    private final int numPanels = 5;
+    private final int numParameters = 2;
+    private final int numPanels = 4;
     private final int dayStageCharlimit = 1;
     
-    
-
     private String param[] = new String[numParameters];
-    private int numberParam[] = new int[numParameters-1];
-    private boolean paramFilled;
+    private int numDays;
     
     JFrame frame = new JFrame("Schedule Options");
     JPanel panel[] = new JPanel[numPanels];
@@ -31,7 +37,6 @@ public class StartMenu implements ActionListener{
 
         initNamePanel();
         initDayPanel();
-        initStagePanel();
         initSubmitButton();
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -46,34 +51,40 @@ public class StartMenu implements ActionListener{
     }
 
     public void actionPerformed(ActionEvent e){
-        paramFilled = true;
-
-
-        for(int i = 0; i < numParameters; i++){
-            param[i] = textField[i].getText();
-        }
-        for(int j = 1; j < numParameters; j++){
-            if(isNumeric(param[j]) == true && param[j].isEmpty() == false 
-            && param[j].length() > dayStageCharlimit){
-                numberParam[j-1] = strToInt(param[j]);
-            }
-            else{
-                JLabel errorLabel = new JLabel("Please enter a number within the range specified");
-                panel[j+1].add(errorLabel);
-                paramFilled = false;
-            }
-        }
-
-        if(paramFilled == true){
-            frame.dispose();
-
-            Schedule newSchedule = new Schedule(param[0], numberParam[0], numberParam[1]);
-        }
-
         
+        if(validNumber(textField[1].getText()) == true 
+        && validName(textField[0].getText()) == true){
+            
+            numDays = strToInt(textField[1].getText());
+            
+            frame.dispose();
+            Schedule newSchedule = new Schedule(textField[0].getText(), numDays);
+        }
+    }    
+    
+    private boolean validName(String s){
+        int firstIndex = 0;
+        
+        if(s.length() == 0){
+            textField[0].setText("please enter a name");
+            return false;
+            
+        }
+        return true;
         
     }
     
+    private boolean validNumber(String s){
+        for(int i = 1; i < numParameters; i++){
+            if(s.isEmpty()==true || isNumeric(s)==false 
+            || s.length()!=dayStageCharlimit 
+            || strToInt(s) <= 0 || strToInt(s) >= 4){
+                textField[1].setText("Please enter a number within the range specified");
+                return false;
+            }
+        }
+        return true;
+    }
     
     //add aesthetic stuff later
     private void initNamePanel(){
@@ -100,33 +111,21 @@ public class StartMenu implements ActionListener{
         panel[0].add(panel[2], BorderLayout.CENTER);
     }
 
-    private void initStagePanel(){
-        panel[3] = new JPanel(new GridLayout());
-        
-        label[2] = new JLabel("Stages Available(1-3): ");
-        textField[2] = new JTextField(1);
-
-        panel[3].add(label[2]);
-        panel[3].add(textField[2]);
-
-        panel[0].add(panel[3], BorderLayout.WEST);
-    }
 
     private void initSubmitButton(){
-        panel[4] = new JPanel(new GridLayout());
+        panel[3] = new JPanel(new GridLayout());
         
         subButton.addActionListener(this);
         
-        panel[4].add(subButton);
+        panel[3].add(subButton);
         
-        panel[0].add(panel[4], BorderLayout.SOUTH);
+        panel[0].add(panel[3], BorderLayout.SOUTH);
     }
 
     public int strToInt(String s){
         int number = Integer.parseInt(s);
 
         return number;
-    
     }
 
     private boolean isNumeric(String s){
@@ -134,10 +133,12 @@ public class StartMenu implements ActionListener{
             int Value = Integer.parseInt(s);
             return true;
         } catch (NumberFormatException e) {
-            System.out.println("Input String cannot be parsed to Integer.");
             return false;
         }
     }
+
+    
+
 
 
 
