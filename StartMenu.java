@@ -63,7 +63,6 @@ public class StartMenu implements ActionListener{
     }    
     
     private boolean validName(String s){
-        int firstIndex = 0;
         
         if(s.length() == 0){
             textField[0].setText("please enter a name");
@@ -122,18 +121,28 @@ public class StartMenu implements ActionListener{
         panel[0].add(panel[3], BorderLayout.SOUTH);
     }
 
-    public int strToInt(String s){
-        int number = Integer.parseInt(s);
+    public static int strToInt(String s){
+        
+        try{
+            int number = Integer.parseInt(s);
 
-        return number;
+            return number;
+        }
+        catch(NumberFormatException e){
+            System.out.println("strToInt is Wrong");
+            return Integer.MIN_VALUE;
+        }
+        
     }
 
-    private boolean isNumeric(String s){
+    public static boolean isNumeric(String s){
         try {
             int Value = Integer.parseInt(s);
             return true;
         } catch (NumberFormatException e) {
+            System.out.println("is numeric is false");
             return false;
+            
         }
     }
 
