@@ -62,6 +62,28 @@ public class StartMenu implements ActionListener{
         }
     }    
     
+    
+    private boolean validTime(String s){
+        //do this 
+        //+uncomment other time realted stuff
+
+        return true;
+    }
+
+    private int[] stringToTime(String s){
+        int x[] = new int[2];
+        
+        //int[0] = substring hours
+        //int[1] = substring minutes
+        return x;
+    }
+    
+    
+    
+
+    
+    
+    
     private boolean validName(String s){
         
         if(s.length() == 0){

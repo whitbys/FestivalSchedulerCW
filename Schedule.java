@@ -4,11 +4,11 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 
-//day display parameter(make sure this works), why the same priority is put before not after
+//why the same priority is put before not after
 //time
 
 
-//change layouts and colours
+//change layouts and colours, make functionsout of stuff
 //A band stuff - stages, days, file download, clear table
 
 
@@ -55,7 +55,6 @@ public class Schedule implements ActionListener{
     }
 
     public void actionPerformed(ActionEvent e){
-        
 
         name = textField[0].getText();
         priority = textField[1].getText();
@@ -77,12 +76,12 @@ public class Schedule implements ActionListener{
             dayNum = StartMenu.strToInt(day);
 
             if(priorityNum > 0 && priorityNum < 4 &&
-            dayNum >0 && dayNum < 4){
+            validDay(numDays, dayNum) == true){
                 tableIndex = list.getActIndex(priorityNum);
-
+                
                 if(tableIndex != Integer.MIN_VALUE){
+
                     dtm[dayNum - 1].insertRow(tableIndex, new Object[] {"timey", name});
-                    System.out.println(tableIndex);
                 }
                 else{
                     textField[1].setText("Please set a valid POSITIVE integer input within range");
@@ -93,8 +92,6 @@ public class Schedule implements ActionListener{
             textField[1].setText("Please set a valid positive INTEGER input");
         }
     }
-    
-    
     
     
     //new functions---------------------------------------
@@ -165,5 +162,24 @@ public class Schedule implements ActionListener{
 
         }
         panel[0].add(panel[2], BorderLayout.EAST);
+    }
+
+    private boolean validDay(int x, int y){
+        boolean b;
+        switch(x){
+            case 1:
+                if(y!=1) b = false;
+
+            case 2:
+                if(y<1 || y>2) b = false;
+
+            case 3:
+                if(y<1 || y>3) b = false;
+ 
+            default:
+                b = true;    
+            }
+
+            return b;
     }
 }
