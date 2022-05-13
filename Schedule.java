@@ -136,7 +136,7 @@ public class Schedule implements ActionListener{
         }
 
         for(int i = 0; i < numInputs; i++){
-            textField[i] = new JTextField();
+            textField[i] = new JTextField(20);
             
             panel[1].add(label[i]);
             panel[1].add(textField[i]);

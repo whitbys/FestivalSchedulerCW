@@ -1,4 +1,4 @@
-1public class Act{
+public class Act{
     private String name;
     private int priority;
 
