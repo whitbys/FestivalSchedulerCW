@@ -4,7 +4,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 
-//why the same priority is put before not after
 //time
 
 
@@ -18,10 +17,11 @@ public class Schedule implements ActionListener{
     private final int numPanels = 3;
     private final int maxNumDays = 3;
 
-    private String name, priority, day;
+    private String name, priority, day, StartTime, EndTime;
     private int tableIndex, priorityNum,dayNum;
     private int numDays;
     private int numInputs = MaxnumInputs;
+    private String mainEventTime = "23:00";
     
     
     JFrame frame = new JFrame("Festival Schedule 2022");
@@ -80,8 +80,10 @@ public class Schedule implements ActionListener{
                 tableIndex = list.getActIndex(priorityNum);
                 
                 if(tableIndex != Integer.MIN_VALUE){
-
-                    dtm[dayNum - 1].insertRow(tableIndex, new Object[] {"timey", name});
+                    StartTime = setStartTime(tableIndex);
+                    EndTime = setEndTime(tableIndex);
+                    
+                    dtm[dayNum - 1].insertRow(tableIndex, new Object[] {StartTime, "End Timey" , name});
                 }
                 else{
                     textField[1].setText("Please set a valid POSITIVE integer input within range");
@@ -95,20 +97,55 @@ public class Schedule implements ActionListener{
     
     
     //new functions---------------------------------------
-    private String setTime(int _tableIndex){
+    private String setStartTime(int _tableIndex){
+        String time = mainEventTime;
+        
+        int hours=23;
+        int minutes=0;
+
+        int c = 0;
+        
         //code to set time at given index
         //if empty, time = main event time
         //for loop(up to index)
         //minus 20 mins, if there is hour overlap deaal with this
         //return x
+        if(_tableIndex == 0){
+            time = mainEventTime;
+        }
+        else{
+            for(int i = 0; i < _tableIndex; i++){
+                minutes -= 30;
+                if(minutes == -30){
+                    hours -= 1;
+                    minutes *= -1;
+                }       
+            }
+            time = hours + ":" + minutes;
+        }
 
+        
+
+
+        return time;
+    }
+
+   private void setEndTime(int _tableIndex){
+       
+   }
+    
+    
+    private void updateTimes(int _tableIndex){
         //code to update all following row times
         //for loop(length - index)
         //add 20 mins to x, if x goes over hour deal with this
         //return x
-
-        String s = "poo";
-        return s;
+        for(int j = _tableIndex + 1; j < list.getListSize(); j++){
+            hours
+            
+            
+            dtm.setValueAt()
+        }
     }
     
     
@@ -155,7 +192,8 @@ public class Schedule implements ActionListener{
             dtm[i] = new DefaultTableModel();
             tabel[i] = new JTable(dtm[i]);
             
-            dtm[i].addColumn("Time");
+            dtm[i].addColumn("Start Time");
+            dtm[i].addColumn("End Time");
             dtm[i].addColumn("Act");
 
             panel[2].add(new JScrollPane(tabel[i]));
