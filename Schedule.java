@@ -81,9 +81,9 @@ public class Schedule implements ActionListener{
                 
                 if(tableIndex != Integer.MIN_VALUE){
                     StartTime = setStartTime(tableIndex);
-                    EndTime = setEndTime(tableIndex);
+                    EndTime = setEndTime(StartTime);
                     
-                    dtm[dayNum - 1].insertRow(tableIndex, new Object[] {StartTime, "End Timey" , name});
+                    dtm[dayNum - 1].insertRow(tableIndex, new Object[] {StartTime, EndTime , name});
                 }
                 else{
                     textField[1].setText("Please set a valid POSITIVE integer input within range");
@@ -121,20 +121,58 @@ public class Schedule implements ActionListener{
                     minutes *= -1;
                 }       
             }
-            time = hours + ":" + minutes;
+            
+            if(minutes == 0){
+                time = hours + ":" + minutes + "0";
+            }
+            else{
+                time = hours + ":" + minutes;
+            }
+            
+
+            
         }
-
-        
-
 
         return time;
     }
 
-   private void setEndTime(int _tableIndex){
+   private String setEndTime(String _startTime){
+        String hourString, minutesString, time;
+        int hour, minutes;
+
+
+        hourString =  _startTime.substring(0, 2);
+         minutesString =  _startTime.substring(3, 5);
+
+         System.out.println(hourString + minutesString);
+
+        hour = StartMenu.strToInt(hourString);
+        minutes = StartMenu.strToInt(minutesString);
+
+        
+
+        if(minutes == 0 && hour == 23){
+            minutes = 25;
+        }
+        else if(minutes == 0 && hour != 23){
+            minutes = 25;
+        }
+        else if(minutes > 10){
+            minutes = 55;
+        }
+
+        
+        if(hour < 10){
+            time = "0" + hour + ":" + minutes;
+        }
+        else{
+            time = hour + ":" + minutes;
+        }
+        return time;
        
    }
     
-    
+    /*
     private void updateTimes(int _tableIndex){
         //code to update all following row times
         //for loop(length - index)
@@ -147,6 +185,7 @@ public class Schedule implements ActionListener{
             dtm.setValueAt()
         }
     }
+    */
     
     
     //--------------------------------------------
