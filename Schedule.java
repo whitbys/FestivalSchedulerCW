@@ -4,7 +4,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 
-//time
+//time, if(table index > a certain value) insert new JRow to say max j
 
 
 //change layouts and colours, make functionsout of stuff
@@ -17,7 +17,7 @@ public class Schedule implements ActionListener{
     private final int numPanels = 3;
     private final int maxNumDays = 3;
 
-    private String name, priority, day, StartTime, EndTime;
+    private String name, priority, day, startTime, endTime;
     private int tableIndex, priorityNum,dayNum;
     private int numDays;
     private int numInputs = MaxnumInputs;
@@ -35,7 +35,7 @@ public class Schedule implements ActionListener{
     JPanel tabelPanel[] = new JPanel[maxNumDays];
 
 
-    List list = new List();
+    List list[] = new List[maxNumDays];
 
 
     public Schedule(String _name, int _numDays){
@@ -77,13 +77,16 @@ public class Schedule implements ActionListener{
 
             if(priorityNum > 0 && priorityNum < 4 &&
             validDay(numDays, dayNum) == true){
-                tableIndex = list.getActIndex(priorityNum);
+                tableIndex = list[dayNum - 1].getActIndex(priorityNum);
                 
                 if(tableIndex != Integer.MIN_VALUE){
-                    StartTime = setStartTime(tableIndex);
-                    EndTime = setEndTime(StartTime);
+                    startTime = setStartTime(tableIndex);
+                    endTime = setEndTime(startTime);
                     
-                    dtm[dayNum - 1].insertRow(tableIndex, new Object[] {StartTime, EndTime , name});
+                    dtm[dayNum - 1].insertRow(tableIndex, new Object[] {startTime, endTime , name});
+
+                    
+                    updateTimes(tableIndex, dayNum, startTime, endTime);
                 }
                 else{
                     textField[1].setText("Please set a valid POSITIVE integer input within range");
@@ -100,59 +103,35 @@ public class Schedule implements ActionListener{
     private String setStartTime(int _tableIndex){
         String time = mainEventTime;
         
-        int hours=23;
+        int hour=23;
         int minutes=0;
-
-        int c = 0;
         
-        //code to set time at given index
-        //if empty, time = main event time
-        //for loop(up to index)
-        //minus 20 mins, if there is hour overlap deaal with this
-        //return x
         if(_tableIndex == 0){
-            time = mainEventTime;
+            return mainEventTime;
         }
         else{
             for(int i = 0; i < _tableIndex; i++){
                 minutes -= 30;
                 if(minutes == -30){
-                    hours -= 1;
+                    hour -= 1;
                     minutes *= -1;
                 }       
             }
-            
-            if(minutes == 0){
-                time = hours + ":" + minutes + "0";
-            }
-            else{
-                time = hours + ":" + minutes;
-            }
-            
-
-            
+            return componentsToTime(hour, minutes);
         }
 
-        return time;
+        
     }
 
    private String setEndTime(String _startTime){
-        String hourString, minutesString, time;
         int hour, minutes;
 
-
-        hourString =  _startTime.substring(0, 2);
-         minutesString =  _startTime.substring(3, 5);
-
-         System.out.println(hourString + minutesString);
-
-        hour = StartMenu.strToInt(hourString);
-        minutes = StartMenu.strToInt(minutesString);
+        hour = extractTime(_startTime, 0);
+        minutes = extractTime(_startTime, 1);
 
         
-
         if(minutes == 0 && hour == 23){
-            minutes = 25;
+            minutes = 55;
         }
         else if(minutes == 0 && hour != 23){
             minutes = 25;
@@ -161,31 +140,98 @@ public class Schedule implements ActionListener{
             minutes = 55;
         }
 
-        
-        if(hour < 10){
-            time = "0" + hour + ":" + minutes;
-        }
-        else{
-            time = hour + ":" + minutes;
-        }
-        return time;
+        return componentsToTime(hour, minutes);
        
    }
-    
-    /*
-    private void updateTimes(int _tableIndex){
+
+    private void updateTimes(int _tableIndex, int _dayNum, String _insertedStart, String _insertedEnd){
         //code to update all following row times
         //for loop(length - index)
         //add 20 mins to x, if x goes over hour deal with this
         //return x
-        for(int j = _tableIndex + 1; j < list.getListSize(); j++){
-            hours
+        // Object startTime, endTime;
+        // String startTimeString, endTimeString;
+        int startHour, startMinutes, endHour, endMinutes;
+
+        
+        //get the inserted times
+
+        // startTimeString = dtm[_dayNum-1].getValueAt(_tableIndex, 0);
+        // endTimeString = dtm[_dayNum-1].getValueAt(_tableIndex, 1);
+        
+        
+        System.out.println(_insertedStart + "\n" + _insertedEnd+ "\n");
+
+
+        //get the inseted minutes/ hours
+        startHour = extractTime(_insertedStart, 0);
+        startMinutes = extractTime(_insertedStart, 1);
+        endHour = extractTime(_insertedEnd, 0);
+        endMinutes = extractTime(_insertedEnd, 1);
+        
+        
+        
+        for(int j = _tableIndex + 1; j <list[_dayNum - 1].getListSize(); j++){
             
-            
-            dtm.setValueAt()
+            if(startMinutes == 0){
+                startMinutes = 30;
+                startHour -= 1;
+            }
+            else if(startMinutes == 30){
+                startMinutes = 0;
+            }
+
+            if(endMinutes == 25){
+                endMinutes = 55;
+                endHour -= 1;
+            }
+            else if(endMinutes == 55){
+                endMinutes = 25;
+            }
+
+            dtm[_dayNum-1].setValueAt(componentsToTime(startHour, startMinutes), j, 0);
+            dtm[_dayNum-1].setValueAt(componentsToTime(endHour, endMinutes), j, 1);
         }
     }
-    */
+    private String componentsToTime(int _hour, int _minutes){
+        String time;
+    
+    
+        if(_hour < 10 && _minutes == 0){
+            time = "0" + _hour + ":" + _minutes + "0";
+        }
+        else if(_minutes == 0){
+            time = _hour + ":" + _minutes + "0";
+        }
+        else if(_hour < 10){
+            time = "0" + _hour + ":" + _minutes;
+        }
+        else{
+            time = _hour + ":" + _minutes;
+        }
+
+        return time;
+   }
+   
+   private int extractTime(String _time, int _units){
+        String s = "extractTime() error";
+    
+        if(_units == 0){
+        s =  _time.substring(0, 2);
+
+        System.out.println(s+ "\n");
+        }
+        else if(_units == 1){
+        s =  _time.substring(3, 5);
+        System.out.println(s + "\n");
+        }
+
+        return StartMenu.strToInt(s);
+   }
+
+    //23:00, 23:55
+    //22:30, 22:55
+    //22:00, 22:25
     
     
     //--------------------------------------------
@@ -228,6 +274,8 @@ public class Schedule implements ActionListener{
         panel[2] = new JPanel(new FlowLayout());
 
         for(int i = 0; i < _days ; i++){
+            list[i] = new List();
+            
             dtm[i] = new DefaultTableModel();
             tabel[i] = new JTable(dtm[i]);
             
