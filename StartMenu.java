@@ -1,57 +1,53 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.lang.Character;
+//import java.lang.Character;
 
-
-//to add later
-//resize panels
-//colour panels + error label
-
-
-//remove the stages parameter 
-
-//JTBD
-//construct schedule depending on parameter input
-//AL-insert into list depending on priority given
-//create a loop around
-//add a button to download JTABLE into files
-
+/**
+ * This class represents a start menu which allows the user to input parameters for their festival structure
+ */
 public class StartMenu implements ActionListener{ 
     private final int numParameters = 2;
     private final int numPanels = 4;
     private final int dayStageCharlimit = 1;
+    private final int nameCharlimit = 50;
     
     private String param[] = new String[numParameters];
     private int numDays;
     
-    JFrame frame = new JFrame("Schedule Options");
-    JPanel panel[] = new JPanel[numPanels];
-    JButton subButton = new JButton("Create Empty Schdule");
-    JLabel label[] = new JLabel[numParameters];
-    JTextField textField[] = new JTextField[numParameters];
+    private JFrame frame = new JFrame("Schedule Options");
+    private JPanel panel[] = new JPanel[numPanels];
+    private JButton subButton = new JButton("Create Empty Schdule");
+    private JLabel label[] = new JLabel[numParameters];
+    private JTextField textField[] = new JTextField[numParameters];
 
+    
+    /**
+     * Creates a new Start Menu
+     */
     public StartMenu(){
         panel[0] = new JPanel(new BorderLayout());
         frame.setContentPane(panel[0]);
 
+        
+        //add components to window
         initNamePanel();
         initDayPanel();
         initSubmitButton();
 
+        //frame characteristics
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
-        frame.setSize(750, 250);
+        frame.setSize(650, 110);
         frame.setVisible(true);
     }
-
 
     public static void main(String args[]){
         StartMenu sm = new StartMenu();
     }
 
+    //create scedule button
     public void actionPerformed(ActionEvent e){
-        
         if(validNumber(textField[1].getText()) == true 
         && validName(textField[0].getText()) == true){
             
@@ -60,54 +56,31 @@ public class StartMenu implements ActionListener{
             frame.dispose();
             Schedule newSchedule = new Schedule(textField[0].getText(), numDays);
         }
-    }    
-    
-    
-    private boolean validTime(String s){
-        //do this 
-        //+uncomment other time realted stuff
-
-        return true;
+        else{
+            textField[0].setText("ERROR");
+            textField[1].setText("ERROR");
+        }
     }
-
-    private int[] stringToTime(String s){
-        int x[] = new int[2];
         
-        //int[0] = substring hours
-        //int[1] = substring minutes
-        return x;
-    }
     
-    
-    
-
-    
-    
-    
+    //name validity
     private boolean validName(String s){
-        
         if(s.length() == 0){
-            textField[0].setText("please enter a name");
-            return false;
-            
+            return false;   
         }
         return true;
-        
     }
     
+    //number of days validity
     private boolean validNumber(String s){
-        for(int i = 1; i < numParameters; i++){
-            if(s.isEmpty()==true || isNumeric(s)==false 
-            || s.length()!=dayStageCharlimit 
-            || strToInt(s) <= 0 || strToInt(s) >= 4){
-                textField[1].setText("Please enter a number within the range specified");
+        if(s.isEmpty()==true || isNumeric(s)==false || s.length()!=dayStageCharlimit 
+        || strToInt(s) <= 0 || strToInt(s) >= 4){
                 return false;
             }
-        }
         return true;
     }
-    
-    //add aesthetic stuff later
+
+    //panel for festival name input
     private void initNamePanel(){
         panel[1] = new JPanel(new GridLayout());
         
@@ -120,6 +93,7 @@ public class StartMenu implements ActionListener{
         panel[0].add(panel[1], BorderLayout.NORTH);
     }
 
+    //panel for number of days input
     private void initDayPanel(){
         panel[2] = new JPanel(new GridLayout());
         
@@ -133,6 +107,7 @@ public class StartMenu implements ActionListener{
     }
 
 
+    //panel for submit button
     private void initSubmitButton(){
         panel[3] = new JPanel(new GridLayout());
         
@@ -143,51 +118,33 @@ public class StartMenu implements ActionListener{
         panel[0].add(panel[3], BorderLayout.SOUTH);
     }
 
+    /**
+     * converts a String type to an int type
+     * @param s String to be converted
+     * @return the String as an int type
+     */
     public static int strToInt(String s){
-        
         try{
             int number = Integer.parseInt(s);
-
             return number;
         }
         catch(NumberFormatException e){
-            System.out.println("strToInt is Wrong");
             return Integer.MIN_VALUE;
         }
-        
     }
 
+    /**
+     * Numeric validity check for a String
+     * @param s String to be checked if it is numeric
+     * @return boolean value based on if the String contains only numeric characters or not
+     */
     public static boolean isNumeric(String s){
         try {
             int Value = Integer.parseInt(s);
             return true;
         } catch (NumberFormatException e) {
-            System.out.println("is numeric is false");
             return false;
-            
         }
     }
 
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //getters/setters
-
-    
 }

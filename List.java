@@ -1,24 +1,38 @@
-import java.util.LinkedList;
+import java.util.ArrayList;
 
+
+/**
+ * This class provides a modified ArrayList with the added method of getActIndex
+ */
 public class List{
-    LinkedList<Integer> actList = new LinkedList<>();
+    private ArrayList<Integer> actList = new ArrayList<>();
     
+    
+    /**
+     * creates a new List
+     */
     public List(){
 
     }
     
-
+    /**
+     * determines the index of the act based on a priority level
+     * @param _priority This is the priority value of the act
+     * @return the index of the act within the list
+     */
     public int getActIndex(int _priority){
+        
+        //check range
         if(_priority < 1 || _priority > 3){
             return Integer.MIN_VALUE;
         }
-        
-        System.out.println("priority:" + _priority);
         
         int LPONE = _priority + 1;
         int LPTWO = _priority + 2;
         int index;
         
+        
+        //check for lower priorities and insert at the first instance of them
         if(actList.indexOf(LPONE) != -1){
             index = actList.indexOf(LPONE);
             actList.add(index, _priority);
@@ -37,11 +51,12 @@ public class List{
         
     }
     
+    /**
+     * retrieves the size of the list of act priorities
+     * @return the size of the list
+     */
     public int getListSize(){
         return actList.size();
     }
 
-    public int getListIndex(int index){
-        return actList.get(index);
-    }
 }
